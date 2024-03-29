@@ -10,8 +10,8 @@ Requires NEURON with Python and MPI support.
 
 1. Type or `./compile` (make sure it is an executable) or the equivalent `nrnivmodl mod`. This should create a directory called either i686 or x86_64, depending on your computer's architecture.
 2. To run single simulation type: `./runsim [num_proc]` (make sure it is an executable) or the equivalent `mpiexec -np [num_proc] nrniv -python -mpi sim/init.py`
-3. To run batch script type: 'python sim/batch.py`
-4. To run analysis type:  'python analysis\fIcurve_calculateAndPlot.py`
+3. To run batch script type: `python sim/batch.py`
+4. To run analysis type:  `python analysis\fIcurve_calculateAndPlot.py`
 
 Use the flag `-u` after python if you want real-time printing on console
 
