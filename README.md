@@ -2,7 +2,7 @@
 ## Description
 A model of mouse primary motor cortex (M1) parvalbumin-positive (PV) corticospinal cell
 
-Developed using NetPyNE (www.neurosimlab.org/netpyne)
+Developed using NetPyNE (https://www.netpyne.org/)
 
 ## Setup and execution
 
