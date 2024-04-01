@@ -42,7 +42,7 @@ allpops = ['PV5B']
 
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}
 
-cfg.recordStim = False
+cfg.recordStim = True
 cfg.recordTime = True
 cfg.recordStep = 0.1
 cfg.recordLFP = False #[[10, y, 90] for y in range(450, 1250, 100)]
@@ -58,13 +58,15 @@ cfg.saveJson = True
 cfg.saveDataInclude = ['simData', 'simConfig', 'netParams']#, 'net']
 cfg.backupCfgFile = None #['cfg.py', 'backupcfg/']
 cfg.gatherOnlySimData = False
-cfg.saveCellSecs = True
+cfg.saveCellSecs = False
 cfg.saveCellConns = False
 
 #------------------------------------------------------------------------------
 # Analysis and plotting
 #------------------------------------------------------------------------------
 with open('cells/popColors.pkl', 'rb') as fileObj: popColors = pickle.load(fileObj)['popColors']
+
+cfg.analysis['plotfI'] = {'amps': [0.1], 'times': [1000], 'dur': 1000, 'targetRates': [10], 'saveFig': True, 'showFig': True}
 cfg.analysis['plotTraces'] = {'include': [('PV5B',0)], 'timeRange': [0,1000], 'oneFigPer': 'cell', 'figSize': (10,4), 'saveFig': True, 'showFig': False}
 #cfg.analysis['plotLFP'] = {'separation': 1.0, 'plots': ['timeSeries', 'locations'], 'saveFig': True, 'showFig': False}
 
@@ -123,3 +125,9 @@ cfg.addNetStim = False
 
 cfg.NetStim1 = {'pop': 'PV5B', 'ynorm':[0,1], 'sec': 'apic_5', 'loc': 0.5, 'synMech': ['AMPA'], 'synMechWeightFactor': [1.0],
 				'start': 0, 'interval': 1000.0/40.0, 'noise': 0.0, 'number': 1000.0, 'weight': 10.0, 'delay': 0}
+
+#------------------------------------------------------------------------------
+# Parameters
+#------------------------------------------------------------------------------
+# example of how to set params; but set from batch.py
+cfg.tune = specs.Dict()
