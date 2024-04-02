@@ -116,6 +116,8 @@ def evolCellPV5B():
     params[('tune', 'soma', 'Nafx', 'gnafbar')] = [0.045*0.5, 0.045*1.5]
     params[('tune', 'soma', 'pas', 'e')] = [-73*1.5, -73.0*0.5]
     params[('tune', 'soma', 'pas', 'g')] = [0.0001*0.5, 0.0001*1.5]
+    params[('tune', 'soma', 'L')] = [27 * 0.5, 27 * 1.5]
+
 
     params[('tune', 'dend', 'Ra')] = [150.*0.5, 150*1.5]
     params[('tune', 'dend', 'cm')] = [1.2*0.5, 1.2*1.5]
@@ -144,6 +146,9 @@ def evolCellPV5B():
     initCfg[('IClamp1', 'amp')] = amps
     initCfg[('IClamp1', 'start')] = times
     initCfg[('IClamp1', 'dur')] = 1000
+    initCfg[('analysis', 'plotTraces')] = {'include': [('PV5B', 0)], 'timeRange': [0, initCfg['duration']*1.5],
+                                           'oneFigPer': 'cell', 'figSize': (10, 4),
+                                           'saveFig': True, 'showFig': False}
 
     initCfg[('analysis', 'plotfI', 'amps')] = amps
     initCfg[('analysis', 'plotfI', 'times')] = times
@@ -179,12 +184,12 @@ def evolCellPV5B():
         'evolAlgorithm': 'custom',
         'fitnessFunc': fitnessFunc, # fitness expression (should read simData)
         'fitnessFuncArgs': fitnessFuncArgs,
-        'pop_size': 20,
+        'pop_size': 2,
         'num_elites': 1, # keep this number of parents for next generation if they are fitter than children
         'mutation_rate': 0.4,
         'crossover': 0.5,
         'maximize': False, # maximize fitness function?
-        'max_generations': 2,
+        'max_generations': 20,
         'time_sleep': 50, # wait this time before checking again if sim is completed (for each generation)
         'maxiter_wait': 20, # max number of times to check if sim is completed (for each generation)
         'defaultFitness': 1000 # set fitness value in case simulation time is over
@@ -248,10 +253,10 @@ def setRunCfg(b, type='mpi_bulletin', nodes=1, coresPerNode=8):
 
 if __name__ == '__main__': 
 
-    b = fIcurve()
-    b.batchLabel = 'fIcurve'
-    #b = evolCellPV5B()
-    #b.batchLabel = 'evolfI'
+    #b = fIcurve()
+    #b.batchLabel = 'fIcurve'
+    b = evolCellPV5B()
+    b.batchLabel = 'evolfI'
     b.saveFolder = 'data/'+b.batchLabel
     setRunCfg(b, 'mpi_direct')
     b.run() # run batch 
