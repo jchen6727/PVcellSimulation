@@ -101,6 +101,101 @@ def EPSPs():
     return b
 """
 
+# ---------------------------------------------------------------------------------------------- #
+# -----                              f-I curve calibration                                ------ #
+# ---------------------------------------------------------------------------------------------- #
+def evolCellPV5B():
+    # parameters space to explore
+    params = specs.ODict()
+
+    params[('tune', 'soma', 'Ra')] = [150.*0.5, 150*1.5]
+    params[('tune', 'soma', 'cm')] = [1.2*0.5, 1.2*1.5]
+    params[('tune', 'soma', 'kdrin', 'gkdrbar')] = [0.018*0.5, 0.018*1.5]
+    params[('tune', 'soma', 'hin', 'gbar')] = [0.00001*0.5, 0.00001*0.5]
+    params[('tune', 'soma', 'kapin', 'gkabar')] = [0.0032*15*0.5, 0.0032*15*0.5]
+    params[('tune', 'soma', 'Nafx', 'gnafbar')] = [0.045*0.5, 0.045*1.5]
+    params[('tune', 'soma', 'pas', 'e')] = [-73*1.5, -73.0*0.5]
+    params[('tune', 'soma', 'pas', 'g')] = [0.0001*0.5, 0.0001*1.5]
+    params[('tune', 'soma', 'L')] = [27 * 0.5, 27 * 1.5]
+
+
+    params[('tune', 'dend', 'Ra')] = [150.*0.5, 150*1.5]
+    params[('tune', 'dend', 'cm')] = [1.2*0.5, 1.2*1.5]
+    params[('tune', 'dend', 'kdrin', 'gkdrbar')] = [0.018*0.5*0.5, 0.018*0.5*1.5]
+    params[('tune', 'dend', 'kapin', 'gkabar')] = [0.0032*15*10*0.5, 0.0032*15*10*0.5]
+    params[('tune', 'dend', 'Nafx', 'gnafbar')] = [0.018*5*0.5, 0.018*5*1.5]
+    params[('tune', 'dend', 'pas', 'e')] = [-73*1.5, -73.0*0.5]
+    params[('tune', 'dend', 'pas', 'g')] = [0.0001*0.5, 0.0001*1.5]
+
+    # current injection params
+    amps = list(np.arange(0.0, 0.65, 0.05))  # amplitudes
+    times = list(np.arange(1000, 2000 * len(amps), 2000))  # start times
+    dur = 500  # ms
+    targetRates = [0., 0., 19., 29., 37., 45., 51., 57., 63., 68., 73., 77., 81.]
+
+    # initial cfg set up
+    initCfg = {} # specs.ODict()
+    initCfg['duration'] = 2000 * len(amps)
+    initCfg[('hParams', 'celsius')] = 37
+
+    initCfg['savePickle'] = False
+    initCfg['saveJson'] = True
+    initCfg['saveDataInclude'] = ['simConfig', 'netParams', 'net', 'simData']
+
+    initCfg[('IClamp1', 'pop')] = 'PV5B'
+    initCfg[('IClamp1', 'amp')] = amps
+    initCfg[('IClamp1', 'start')] = times
+    initCfg[('IClamp1', 'dur')] = 1000
+    initCfg[('analysis', 'plotTraces')] = {'include': [('PV5B', 0)], 'timeRange': [0, initCfg['duration']*1.5],
+                                           'oneFigPer': 'cell', 'figSize': (10, 4),
+                                           'saveFig': True, 'showFig': False}
+
+    initCfg[('analysis', 'plotfI', 'amps')] = amps
+    initCfg[('analysis', 'plotfI', 'times')] = times
+    initCfg[('analysis', 'plotfI', 'dur')] = dur
+    initCfg[('analysis', 'plotfI', 'targetRates')] = targetRates
+
+    for k, v in params.items():
+        initCfg[k] = v[0]  # initialize params in cfg so they can be modified
+
+    # fitness function
+    fitnessFuncArgs = {}
+    fitnessFuncArgs['targetRates'] = targetRates
+
+    def fitnessFunc(simData, **kwargs):
+        targetRates = kwargs['targetRates']
+
+        diffRates = [abs(x-t) for x,t in zip(simData['fI'], targetRates)]
+        fitness = np.mean(diffRates)
+
+        print(' Candidate rates: ', simData['fI'])
+        print(' Target rates:    ', targetRates)
+        print(' Difference:      ', diffRates)
+
+        return fitness
+
+
+    # create Batch object with paramaters to modify, and specifying files to use
+    b = Batch(cfgFile='sim/cfg.py', netParamsFile='sim/netParams.py', params=params, initCfg=initCfg)
+
+    # Set evol method (all param combinations)
+    b.method = 'evol'
+    b.evolCfg = {
+        'evolAlgorithm': 'custom',
+        'fitnessFunc': fitnessFunc, # fitness expression (should read simData)
+        'fitnessFuncArgs': fitnessFuncArgs,
+        'pop_size': 2,
+        'num_elites': 1, # keep this number of parents for next generation if they are fitter than children
+        'mutation_rate': 0.4,
+        'crossover': 0.5,
+        'maximize': False, # maximize fitness function?
+        'max_generations': 20,
+        'time_sleep': 50, # wait this time before checking again if sim is completed (for each generation)
+        'maxiter_wait': 20, # max number of times to check if sim is completed (for each generation)
+        'defaultFitness': 1000 # set fitness value in case simulation time is over
+    }
+
+    return b
 # ----------------------------------------------------------------------------------------------
 # f-I curve
 # ----------------------------------------------------------------------------------------------
@@ -158,9 +253,10 @@ def setRunCfg(b, type='mpi_bulletin', nodes=1, coresPerNode=8):
 
 if __name__ == '__main__': 
 
-    b = fIcurve()
-    b.batchLabel = 'fIcurve' #'wscale2'
+    #b = fIcurve()
+    #b.batchLabel = 'fIcurve'
+    b = evolCellPV5B()
+    b.batchLabel = 'evolfI'
     b.saveFolder = 'data/'+b.batchLabel
-    #b.method = 'grid'  # For weight normalization and fI curve
     setRunCfg(b, 'mpi_direct')
     b.run() # run batch 
