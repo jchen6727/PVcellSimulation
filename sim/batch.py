@@ -108,31 +108,40 @@ def evolCellPV5B():
     # parameters space to explore
     params = specs.ODict()
 
+    TotalCellSurface = 3969.4023 # um2
+    ExpCapacitance = 47.7 # pF
+    SpecificCapacitance = ExpCapacitance*1e-6/TotalCellSurface*1e-8 # uF/cm2
+    ExpInputResistance = 239 # MOhm
+
     params[('tune', 'soma', 'Ra')] = [150.*0.5, 150*1.5]
-    params[('tune', 'soma', 'cm')] = [1.2*0.5, 1.2*1.5]
+    params[('tune', 'soma', 'cm')] = [SpecificCapacitance*0.5, SpecificCapacitance*1.5]
     params[('tune', 'soma', 'kdrin', 'gkdrbar')] = [0.018*0.5, 0.018*1.5]
     params[('tune', 'soma', 'hin', 'gbar')] = [0.00001*0.5, 0.00001*0.5]
     params[('tune', 'soma', 'kapin', 'gkabar')] = [0.0032*15*0.5, 0.0032*15*0.5]
     params[('tune', 'soma', 'Nafx', 'gnafbar')] = [0.045*0.5, 0.045*1.5]
     params[('tune', 'soma', 'pas', 'e')] = [-73*1.5, -73.0*0.5]
-    params[('tune', 'soma', 'pas', 'g')] = [0.0001*0.5, 0.0001*1.5]
+    params[('tune', 'soma', 'pas', 'g')] = [1/ExpInputResistance*0.5, 1/ExpInputResistance*1.5]
     params[('tune', 'soma', 'L')] = [27 * 0.5, 27 * 1.5]
 
-
     params[('tune', 'dend', 'Ra')] = [150.*0.5, 150*1.5]
-    params[('tune', 'dend', 'cm')] = [1.2*0.5, 1.2*1.5]
+    params[('tune', 'dend', 'cm')] = [SpecificCapacitance*0.5, SpecificCapacitance*1.5]
     params[('tune', 'dend', 'kdrin', 'gkdrbar')] = [0.018*0.5*0.5, 0.018*0.5*1.5]
     params[('tune', 'dend', 'kapin', 'gkabar')] = [0.0032*15*10*0.5, 0.0032*15*10*0.5]
     params[('tune', 'dend', 'Nafx', 'gnafbar')] = [0.018*5*0.5, 0.018*5*1.5]
     params[('tune', 'dend', 'pas', 'e')] = [-73*1.5, -73.0*0.5]
-    params[('tune', 'dend', 'pas', 'g')] = [0.0001*0.5, 0.0001*1.5]
+    params[('tune', 'dend', 'pas', 'g')] = [1/ExpInputResistance*0.5, 1/ExpInputResistance*1.5]
 
     # current injection params
-    amps = list(np.arange(0.0, 0.65, 0.05))  # amplitudes
+    ExpAmps = list(np.arange(0.6, 1.06, 0.02))  # amplitudes
+    ExpTargetRates = [1.14, 3., 4.85, 6.57, 7.71, 9.14, 10.43, 11.43, 12.43, 12.86, 13.86, 14.43, 15.15, 15.86, 16.29, 17.29, 17.57, 18.57, 19.14, 19.57, 19.43, 19.71, 20.2, 20.]
+    amps = ExpAmps[::3]
+    amps.insert(0,0.54)
+    amps.insert(0, 0.48)
     times = list(np.arange(1000, 2000 * len(amps), 2000))  # start times
     dur = 500  # ms
-    targetRates = [0., 0., 19., 29., 37., 45., 51., 57., 63., 68., 73., 77., 81.]
-
+    targetRates = ExpTargetRates[::3]#[0., 0., 19., 29., 37., 45., 51., 57., 63., 68., 73., 77., 81.]
+    targetRates.insert(0,0)
+    targetRates.insert(0,0)
     # initial cfg set up
     initCfg = {} # specs.ODict()
     initCfg['duration'] = 2000 * len(amps)
@@ -183,12 +192,12 @@ def evolCellPV5B():
         'evolAlgorithm': 'custom',
         'fitnessFunc': fitnessFunc, # fitness expression (should read simData)
         'fitnessFuncArgs': fitnessFuncArgs,
-        'pop_size': 2,
+        'pop_size': 4,
         'num_elites': 1, # keep this number of parents for next generation if they are fitter than children
         'mutation_rate': 0.4,
         'crossover': 0.5,
         'maximize': False, # maximize fitness function?
-        'max_generations': 3,
+        'max_generations': 30,
         'time_sleep': 50, # wait this time before checking again if sim is completed (for each generation)
         'maxiter_wait': 20, # max number of times to check if sim is completed (for each generation)
         'defaultFitness': 1000 # set fitness value in case simulation time is over
