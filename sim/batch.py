@@ -110,7 +110,7 @@ def evolCellPV5B():
 
     TotalCellSurface = 3969.4023 # um2
     ExpCapacitance = 47.7 # pF
-    SpecificCapacitance = ExpCapacitance*1e-6/TotalCellSurface*1e-8 # uF/cm2
+    SpecificCapacitance = ExpCapacitance*1e-6/(TotalCellSurface*1e-8) # uF/cm2
     ExpInputResistance = 239 # MOhm
 
     params[('tune', 'soma', 'Ra')] = [150.*0.5, 150*1.5]
