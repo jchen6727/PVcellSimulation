@@ -112,6 +112,7 @@ def evolCellPV5B():
     ExpCapacitance = 47.7 # pF
     SpecificCapacitance = ExpCapacitance*1e-6/(TotalCellSurface*1e-8) # uF/cm2
     ExpInputResistance = 239 # MOhm
+    SpecificLeakConductance = 1/(239*1e6)/(TotalCellSurface*1e-8) # S/cm2
 
     params[('tune', 'soma', 'Ra')] = [150.*0.5, 150*1.5]
     params[('tune', 'soma', 'cm')] = [SpecificCapacitance*0.5, SpecificCapacitance*1.5]
@@ -120,7 +121,7 @@ def evolCellPV5B():
     params[('tune', 'soma', 'kapin', 'gkabar')] = [0.0032*15*0.5, 0.0032*15*0.5]
     params[('tune', 'soma', 'Nafx', 'gnafbar')] = [0.045*0.5, 0.045*1.5]
     params[('tune', 'soma', 'pas', 'e')] = [-73*1.5, -73.0*0.5]
-    params[('tune', 'soma', 'pas', 'g')] = [1/ExpInputResistance*0.5, 1/ExpInputResistance*1.5]
+    params[('tune', 'soma', 'pas', 'g')] = [SpecificLeakConductance*0.5, SpecificLeakConductance*1.5]
     params[('tune', 'soma', 'L')] = [27 * 0.5, 27 * 1.5]
 
     params[('tune', 'dend', 'Ra')] = [150.*0.5, 150*1.5]
@@ -129,7 +130,7 @@ def evolCellPV5B():
     params[('tune', 'dend', 'kapin', 'gkabar')] = [0.0032*15*10*0.5, 0.0032*15*10*0.5]
     params[('tune', 'dend', 'Nafx', 'gnafbar')] = [0.018*5*0.5, 0.018*5*1.5]
     params[('tune', 'dend', 'pas', 'e')] = [-73*1.5, -73.0*0.5]
-    params[('tune', 'dend', 'pas', 'g')] = [1/ExpInputResistance*0.5, 1/ExpInputResistance*1.5]
+    params[('tune', 'dend', 'pas', 'g')] = [SpecificLeakConductance*0.5, SpecificLeakConductance*1.5]
 
     # current injection params
     ExpAmps = list(np.arange(0.6, 1.06, 0.02))  # amplitudes
