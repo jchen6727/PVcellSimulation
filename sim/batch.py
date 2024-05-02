@@ -133,11 +133,11 @@ def evolCellPV5B():
     params[('tune', 'dend', 'pas', 'g')] = [SpecificLeakConductance*0.5, SpecificLeakConductance*1.5]
 
     # current injection params
-    ExpAmps = list(np.arange(0.6, 1.06, 0.02))  # amplitudes
-    ExpTargetRates = [1.14, 3., 4.85, 6.57, 7.71, 9.14, 10.43, 11.43, 12.43, 12.86, 13.86, 14.43, 15.15, 15.86, 16.29, 17.29, 17.57, 18.57, 19.14, 19.57, 19.43, 19.71, 20.2, 20.]
+    ExpAmps = list(np.arange(0.08, 0.54, 0.02))  # amplitudes
+    ExpTargetRates = [1.14, 3., 4.85, 6.57, 7.71, 9.14, 10.43, 11.43, 12.43, 12.86, 13.86, 14.43, 15.15, 15.86, 16.29, 17.29, 17.57, 18.57,$
     amps = ExpAmps[::3]
-    amps.insert(0,0.54)
-    amps.insert(0, 0.48)
+    amps.insert(0, 0.04)
+    amps.insert(0, 0.02)
     times = list(np.arange(1000, 2000 * len(amps), 2000))  # start times
     dur = 500  # ms
     targetRates = ExpTargetRates[::3]#[0., 0., 19., 29., 37., 45., 51., 57., 63., 68., 73., 77., 81.]
