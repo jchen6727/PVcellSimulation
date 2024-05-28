@@ -96,12 +96,14 @@ if 'PT5B_full' not in loadCellParams:
 #------------------------------------------------------------------------------
 ## PV cell params (3-comp)
 if 'PV_reduced' not in loadCellParams:
+    #cellRule = netParams.importCellParams(label='PV_reduced', conds={'cellType':'PV', 'cellModel':'HH_reduced'},
+    #  fileName='cells/FS3.hoc', cellName='FScell1', cellInstance = True)
     cellRule = netParams.importCellParams(label='PV_reduced', conds={'cellType':'PV', 'cellModel':'HH_reduced'},
-      fileName='cells/FS3.hoc', cellName='FScell1', cellInstance = True)
+      fileName='cells/LTS3.hoc', cellName='FScell1', cellInstance = True)
     cellRule['secLists']['spiny'] = ['soma', 'dend']
-    netParams.addCellParamsWeightNorm('PV_reduced', 'conn/PV_reduced_weightNorm.pkl', threshold=cfg.weightNormThreshold)
+    #netParams.addCellParamsWeightNorm('PV_reduced', 'conn/PV_reduced_weightNorm.pkl', threshold=cfg.weightNormThreshold)
     # cellRule['secs']['soma']['weightNorm'][0] *= 1.5
-    if saveCellParams: netParams.saveCellParamsRule(label='PV_reduced', fileName='cells/PV_reduced_cellParams.pkl')
+    #if saveCellParams: netParams.saveCellParamsRule(label='PV_reduced', fileName='cells/PV_reduced_cellParams.pkl')
 
 for sec, secDict in netParams.cellParams['PV_reduced']['secs'].items():
     if sec in cfg.tune:
@@ -121,6 +123,47 @@ for sec, secDict in netParams.cellParams['PV_reduced']['secs'].items():
             if geomParam in cfg.tune[sec]:
                 secDict['geom'][geomParam] = cfg.tune[sec][geomParam]
 
+
+Ra, cm, gkdrbar, gbar, gkabar, gnafbar, gcatbar, e, g = 226.8778027, \
+1.4668784547221765, 0.074266696, 8.181467787372347e-07, 9.065582224086196e-06, \
+0.6393160722589732, 0.00138129, -98.99999928, 4.65E-05
+
+'''
+cellRule= {conds: {cellType: 'PV', cellModel: 'HH_reduced'}, 
+secs: {soma: {geom: {L: 42.0, nseg: 1, diam: 42.0, Ra: 226.8778027, cm: 1.4668784547221765}, 
+topol: {}, mechs: {Nafx: {gnafbar: 0.6393160722589732, ar2: 1.0}, cadyn: {}, catcb: {gcatbar: 0.00138129}, 
+hin: {K: 10.0, gbar: 8.181467787372347e-07, vhalf: -90.0}, kapcb: {gkabar: 9.065582224086196e-06}, 
+kdrin: {gkdrbar: 0.074266696}, pas: {g: 4.65e-05, e: -98.99999928}}, 
+ions: {ca: {e: 135.2142908191355, i: 5e-05, o: 2.0}, hi: {e: 0.0, i: 1.0, o: 1.0}, 
+k: {e: -78.6041897101908, i: 54.4, o: 2.5}, na: {e: 50.0, i: 10.0, o: 140.0}}}, 
+axon: {geom: {L: 113.22, nseg: 1, diam: 1.1, Ra: 150.0, cm: 1.2}, topol: {parentSec: 'soma', parentX: 0.5, childX: 0.0}, 
+mechs: {Nafx: {gnafbar: 0.75, ar2: 1.0}, kdrin: {gkdrbar: 0.009}, pas: {g: 2.5e-05, e: -72.0750539439938}}, 
+ions: {k: {e: -78.6041897101908, i: 54.4, o: 2.5}, na: {e: 50.0, i: 10.0, o: 140.0}}}, 
+dend: {geom: {L: 176.0, nseg: 1, diam: 7.0, Ra: 150.0, cm: 1.2}, topol: {parentSec: 'soma', parentX: 0.0, childX: 0.0}, 
+mechs: {Nafx: {gnafbar: 0.018, ar2: 1.0}, kapcb: {gkabar: 0.00875}, kdrin: {gkdrbar: 0.009}, 
+pas: {g: 2.5e-05, e: -60.93996229584678}}, ions: {k: {e: -78.6041897101908, i: 54.4, o: 2.5}, 
+na: {e: 50.0, i: 10.0, o: 140.0}}}}, secLists: {SectionList[0]: [], SectionList[1]: [], 
+SectionList[16]: ['soma'], SectionList[17]: ['soma', 'axon', 'dend'], spiny: ['soma', 'dend']}, 
+globals: {celsius: 23.0, hinf_catcb: 0.3068442636178239, ki0_k_ion: 140.0, ko0_k_ion: 3.82, minf_catcb: 0.0358812246203101}}
+'''
+
+#cellRule['secs']['soma']['vinit'] =  e
+#cellRule['secs']['soma']['geom'] = {'cm': cm, 'Ra': Ra}
+#cellRule['secs']['soma']['mechs']['pas'] = {'g': g, 'e': e}
+#cellRule['secs']['soma']['mechs']['kdrin']['gkdrbar'] = gkdrbar
+#cellRule['secs']['soma']['mechs']['hin']['gbar'] = gbar
+#cellRule['secs']['soma']['mechs']['kapcb']['gkabar'] = gkabar
+#cellRule['secs']['soma']['mechs']['Nafx']['gnafbar'] = gnafbar
+#cellRule['secs']['soma']['mechs']['catcb']['gcatbar'] = gcatbar
+
+#cellRule['secs']['axon']['vinit'] =  e
+#cellRule['secs']['axon']['geom'] = {'cm': cm, 'Ra': Ra}
+#cellRule['secs']['axon']['mechs']['pas'] = {'g': g, 'e': e}
+#cellRule['secs']['dend']['vinit'] =  e
+#cellRule['secs']['dend']['geom'] = {'cm': cm, 'Ra': Ra}
+#cellRule['secs']['dend']['mechs']['pas'] = {'g': g, 'e': e}
+
+#print(cellRule); #quit()
 
 #------------------------------------------------------------------------------
 # Population parameters

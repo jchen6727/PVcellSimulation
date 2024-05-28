@@ -108,41 +108,51 @@ def evolCellPV5B():
     # parameters space to explore
     params = specs.ODict()
 
-    TotalCellSurface = 3969.4023 # um2
+    TotalCellSurface = 9803.4718 #3969.4023 # um2
     ExpCapacitance = 47.7 # pF
-    SpecificCapacitance = ExpCapacitance*1e-6/(TotalCellSurface*1e-8) # uF/cm2
+    SpecificCapacitance = 1.2 #ExpCapacitance*1e-6/(TotalCellSurface*1e-8) # uF/cm2
     ExpInputResistance = 239 # MOhm
-    SpecificLeakConductance = 1/(239*1e6)/(TotalCellSurface*1e-8) # S/cm2
+    SpecificLeakConductance = 6e-5 #1/(239*1e6)/(TotalCellSurface*1e-8) # S/cm2
+    #print(SpecificLeakConductance, SpecificCapacitance)
+    #[222.15039017222813, 1.4144239759846486, 0.07787265804398133, 0.0, 0.0, 
+    #0.6309169430849156, 0.0013728455162340843, -97.45589500657026, 4.890896421208355e-05] 
+    """
+    [226.8778026684533, 1.4668784547221765, 0.0742666956942066, 8.181467787372347e-07, 9.065582224086196e-06, 0.6393160722589732, 
+     0.0013812904703444037, -98.9999992775243, 4.650114503867427e-05]
+    """
+    params[('tune', 'soma', 'Ra')] = [222*0.95, 222*1.05]
+    params[('tune', 'soma', 'cm')] = [1.4*0.95, 1.4*1.05]
+    params[('tune', 'soma', 'kdrin', 'gkdrbar')] = [0.077872658*0.95, 0.077872658*1.05]
+    params[('tune', 'soma', 'hin', 'gbar')] = [0.000002*0.01, 0.000002*1]
+    params[('tune', 'soma', 'kapcb', 'gkabar')] = [0.00075*0.01, 0.0075*1]
+    params[('tune', 'soma', 'Nafx', 'gnafbar')] = [0.63091*0.95, 0.63091*1.05]
+    params[('tune', 'soma', 'catcb', 'gcatbar')] = [0.0013728*0.95, 0.0013728*1.05]
+    params[('tune', 'soma', 'pas', 'e')] = [-99,-40]
+    params[('tune', 'soma', 'pas', 'g')] = [4.89089e-5*0.95, 4.89089e-5*1.05]
+    #params[('tune', 'soma', 'L')] = [10, 60]
 
-    params[('tune', 'soma', 'Ra')] = [150.*0.5, 150*1.5]
-    params[('tune', 'soma', 'cm')] = [SpecificCapacitance*0.5, SpecificCapacitance*1.5]
-    params[('tune', 'soma', 'kdrin', 'gkdrbar')] = [0.018*0.5, 0.018*1.5]
-    params[('tune', 'soma', 'hin', 'gbar')] = [0.00001*0.5, 0.00001*0.5]
-    params[('tune', 'soma', 'kapin', 'gkabar')] = [0.0032*15*0.5, 0.0032*15*0.5]
-    params[('tune', 'soma', 'Nafx', 'gnafbar')] = [0.045*0.5, 0.045*1.5]
-    params[('tune', 'soma', 'pas', 'e')] = [-73*1.5, -73.0*0.5]
-    params[('tune', 'soma', 'pas', 'g')] = [SpecificLeakConductance*0.5, SpecificLeakConductance*1.5]
-    params[('tune', 'soma', 'L')] = [27 * 0.5, 27 * 1.5]
 
-    params[('tune', 'dend', 'Ra')] = [150.*0.5, 150*1.5]
-    params[('tune', 'dend', 'cm')] = [SpecificCapacitance*0.5, SpecificCapacitance*1.5]
-    params[('tune', 'dend', 'kdrin', 'gkdrbar')] = [0.018*0.5*0.5, 0.018*0.5*1.5]
-    params[('tune', 'dend', 'kapin', 'gkabar')] = [0.0032*15*10*0.5, 0.0032*15*10*0.5]
-    params[('tune', 'dend', 'Nafx', 'gnafbar')] = [0.018*5*0.5, 0.018*5*1.5]
-    params[('tune', 'dend', 'pas', 'e')] = [-73*1.5, -73.0*0.5]
-    params[('tune', 'dend', 'pas', 'g')] = [SpecificLeakConductance*0.5, SpecificLeakConductance*1.5]
+    #params[('tune', 'dend', 'Ra')] = [150.*0.5, 150*1.5]
+    #params[('tune', 'dend', 'cm')] = [SpecificCapacitance*0.8, SpecificCapacitance*1.2]
+    #params[('tune', 'dend', 'kdrin', 'gkdrbar')] = [0.018*5*0.5, 0.018*5*1.5]
+    #params[('tune', 'dend', 'kapcb', 'gkabar')] = [0.00875*0.5, 0.00875*1.5]
+    #params[('tune', 'dend', 'Nafx', 'gnafbar')] = [0.018*0.5, 0.018*1.5]
+    #params[('tune', 'dend', 'pas', 'e')] = [-64*1.5, -64*0.5]
+    #params[('tune', 'dend', 'pas', 'g')] = [SpecificLeakConductance*0.8, SpecificLeakConductance*1.2]
 
     # current injection params
     ExpAmps = list(np.arange(0.08, 0.54, 0.02))  # amplitudes
-    ExpTargetRates = [1.14, 3., 4.85, 6.57, 7.71, 9.14, 10.43, 11.43, 12.43, 12.86, 13.86, 14.43, 15.15, 15.86, 16.29, 17.29, 17.57, 18.57,$
-    amps = ExpAmps[::3]
+    ExpTargetRates = [1.14, 3., 4.85, 6.57, 7.71, 9.14, 10.43, 11.43, 12.43, 12.86, 13.86, 14.43, 15.15, 15.86, 16.29, 17.29, 17.57, 18.57, 19.14, 19.57, 19.43, 19.71, 20.2, 20.]
+    amps = ExpAmps[:8] #[::3]
     amps.insert(0, 0.04)
     amps.insert(0, 0.02)
     times = list(np.arange(1000, 2000 * len(amps), 2000))  # start times
-    dur = 500  # ms
-    targetRates = ExpTargetRates[::3]#[0., 0., 19., 29., 37., 45., 51., 57., 63., 68., 73., 77., 81.]
+    dur = 400  # ms
+    targetRates = ExpTargetRates[:8] #[::3]
     targetRates.insert(0,0)
     targetRates.insert(0,0)
+    targetRates = [i*1000/400 for i in targetRates]
+    #print(amps, targetRates)
     # initial cfg set up
     initCfg = {} # specs.ODict()
     initCfg['duration'] = 2000 * len(amps)
@@ -155,7 +165,7 @@ def evolCellPV5B():
     initCfg[('IClamp1', 'pop')] = 'PV5B'
     initCfg[('IClamp1', 'amp')] = amps
     initCfg[('IClamp1', 'start')] = times
-    initCfg[('IClamp1', 'dur')] = 1000
+    initCfg[('IClamp1', 'dur')] = 400
     initCfg[('analysis', 'plotTraces')] = {'include': [('PV5B', 0)], 'timeRange': [0, initCfg['duration']],
                                            'oneFigPer': 'cell', 'figSize': (10, 4),
                                            'saveFig': True, 'showFig': False}
@@ -176,6 +186,13 @@ def evolCellPV5B():
         targetRates = kwargs['target']['rates']
         diffRates = [abs(x-t) for x,t in zip(simData['fI'], targetRates)]
         fitness = np.mean(diffRates)
+        #if np.mean(simData['fI'])<5: fitness=1000
+        #if np.count_nonzero(simData['fI'])<6: fitness=1000
+        u, c = np.unique(simData['fI'], return_counts=True)
+        dup = u[c > 1]
+        if np.count_nonzero(simData['fI'])<4 or np.max(simData['fI'])>100 or sorted(simData['fI']) != simData['fI'] or len(dup)>1: fitness=1000
+
+
 
         print(' Candidate rates: ', simData['fI'])
         print(' Target rates:    ', targetRates)
@@ -190,17 +207,17 @@ def evolCellPV5B():
     # Set evol method (all param combinations)
     b.method = 'evol'
     b.evolCfg = {
-        'evolAlgorithm': 'custom',
+        'evolAlgorithm': 'custom', #'custom',
         'fitnessFunc': fitnessFunc, # fitness expression (should read simData)
         'fitnessFuncArgs': fitnessFuncArgs,
-        'pop_size': 4,
-        'num_elites': 1, # keep this number of parents for next generation if they are fitter than children
-        'mutation_rate': 0.4,
+        'pop_size': 100,
+        'num_elites': 2, # keep this number of parents for next generation if they are fitter than children
+        'mutation_rate': 0.5,
         'crossover': 0.5,
         'maximize': False, # maximize fitness function?
-        'max_generations': 30,
-        'time_sleep': 50, # wait this time before checking again if sim is completed (for each generation)
-        'maxiter_wait': 20, # max number of times to check if sim is completed (for each generation)
+        'max_generations': 100,
+        'time_sleep': 500, # wait this time before checking again if sim is completed (for each generation)
+        'maxiter_wait': 5, # max number of times to check if sim is completed (for each generation)
         'defaultFitness': 1000 # set fitness value in case simulation time is over
     }
 
@@ -208,12 +225,35 @@ def evolCellPV5B():
 # ----------------------------------------------------------------------------------------------
 # f-I curve
 # ----------------------------------------------------------------------------------------------
-def fIcurve(): #TODO: Change values for the IClamp1 so it respects the experimental protocol
+def fIcurve(): 
     params = specs.ODict()
 
-    params[('IClamp1', 'pop')] = ['PV5B']
-    params[('IClamp1', 'amp')] = list(np.arange(0.0, 10.0, 1)/10.0)
+    # current injection params
+    ExpAmps = list(np.arange(0.08, 0.54, 0.02))  # amplitudes
+    ExpTargetRates = [1.14, 3., 4.85, 6.57, 7.71, 9.14, 10.43, 11.43, 12.43, 12.86, 13.86, 14.43, 15.15, 15.86, 16.29, 17.29, 
+17.57, 18.57, 19.14, 19.57, 19.43, 19.71, 20.2, 20.]
+    amps = ExpAmps[:8] #[::3]
+    amps.insert(0, 0.04)
+    amps.insert(0, 0.02)
+    #times = list(np.arange(1000, 2000 * len(amps), 2000))  # start times
+    dur = 400  # ms
 
+    Ra, cm, gkdrbar, gbar, gkabar, gnafbar, gcatbar, e, g = 226.8778027, \
+    1.4668784547221765,	0.074266696, 8.181467787372347e-07, 9.065582224086196e-06, \
+    0.6393160722589732,	0.00138129, -98.99999928, 4.65E-05
+
+    params[('tune','soma', 'Ra')] = [Ra, Ra]
+    params[('tune','soma', 'cm')] = [cm, cm]
+    params[('tune','soma', 'kdrin', 'gkdrbar')] = [gkdrbar, gkdrbar]
+    params[('tune','soma', 'hin', 'gbar')] = [gbar, gbar]
+    params[('tune','soma', 'kapcb', 'gkabar')] = [gkabar, gkabar]
+    params[('tune','soma', 'Nafx', 'gnafbar')] = [gnafbar, gnafbar]
+    params[('tune','soma', 'catcb', 'gcatbar')] = [gcatbar, gcatbar]
+    params[('tune','soma', 'pas', 'e')] = [e, e]
+    params[('tune','soma', 'pas', 'g')] = [g, g]
+
+    params[('IClamp1', 'pop')] = ['PV5B']
+    params[('IClamp1', 'amp')] = amps
     # initial config
     initCfg = {}
     initCfg['duration'] = 1.0*1e3
@@ -222,12 +262,26 @@ def fIcurve(): #TODO: Change values for the IClamp1 so it respects the experimen
     initCfg['weightNorm'] = True
     initCfg[('IClamp1','sec')] = 'soma'
     initCfg[('IClamp1','loc')] = 0.5
-    initCfg[('IClamp1','start')] = 200
-    initCfg[('IClamp1','dur')] = 600
-    initCfg[('analysis','plotTraces','timeRange')] = [0, 1000]
-    initCfg[('analysis', 'plotfI')] = {} # Don't plot fI in this case
+    initCfg[('IClamp1','start')] = 300
+    initCfg[('IClamp1','dur')] = dur
 
-    groupedParams = []
+    #initCfg[('analysis','plotTraces','timeRange')] = [0, 1000]
+    #initCfg[('analysis', 'plotfI')] = {} # Don't plot fI in this case
+
+    initCfg[('analysis', 'plotTraces')] = {'include': [('PV5B', 0)], 'timeRange': [0, initCfg['duration']],
+                                           'oneFigPer': 'cell', 'figSize': (10, 4),
+                                           'saveFig': True, 'showFig': False}
+
+    initCfg[('analysis', 'plotfI', 'amps')] = amps
+    initCfg[('analysis', 'plotfI', 'times')] = 300
+    initCfg[('analysis', 'plotfI', 'dur')] = dur
+
+
+    groupedParams = [('tune', 'soma', 'Ra'), ('IClamp1', 'pop'), \
+('tune', 'soma', 'cm'), ('tune', 'soma', 'kdrin', 'gkdrbar'), \
+('tune', 'soma', 'hin', 'gbar'), ('tune', 'soma', 'kapcb', 'gkabar'), \
+('tune', 'soma', 'Nafx', 'gnafbar'), ('tune', 'soma', 'catcb', 'gcatbar'), \
+('tune', 'soma', 'pas', 'e'), ('tune', 'soma', 'pas', 'g')]
 
     b = Batch(params=params, netParamsFile='sim/netParams.py', cfgFile='sim/cfg.py', initCfg=initCfg, groupedParams=groupedParams)
     b.method = 'grid'
@@ -252,16 +306,29 @@ def setRunCfg(b, type='mpi_bulletin', nodes=1, coresPerNode=8):
             'skip': False,
             'skipCustom': '_data.pkl'}
 
+    elif type=='hpc_sge':
+        b.runCfg = {'type': 'hpc_sge',
+                    'jobName': 'my_batch',
+                    'cores': 1,
+                    'mpiCommand': 'mpiexec',
+                    'vmem': '1G',
+                    'walltime': "00:30:00",
+                    'script': 'sim/init.py',
+                    'queueName': 'cpu.q',
+                    'skip': False,
+                    'skipCustom': '_data.json'}
+
+
 # ----------------------------------------------------------------------------------------------
 # Main code
 # ----------------------------------------------------------------------------------------------
 
 if __name__ == '__main__': 
 
-    #b = fIcurve()
-    #b.batchLabel = 'fIcurve'
-    b = evolCellPV5B()
-    b.batchLabel = 'evolfI'
+    b = fIcurve()
+    b.batchLabel = 'fIcurve_3'
+    #b = evolCellPV5B()
+    #b.batchLabel = 'evolfI_4'
     b.saveFolder = 'data/'+b.batchLabel
-    setRunCfg(b, 'mpi_direct')
+    setRunCfg(b, 'hpc_sge')
     b.run() # run batch 
