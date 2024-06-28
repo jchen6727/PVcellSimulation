@@ -4,7 +4,7 @@ import os
 import re
 import numpy as np
 
-path = r'/Users/romanbaravalle/PycharmProjects/PVcellSimulation/InVivoFiringRate/CSN_spike_data/' # use your path
+path = r'CSN_spike_data/' # use your path
 all_files = glob.glob(os.path.join(path, "*.txt"))
 
 li = []
